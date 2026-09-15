@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5Z4BWLMP8Q"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-5Z4BWLMP8Q');
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="description"
+        content="ResSafe: Learning Extreme Humanoid Balance">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ResSafe: Learning Safety Filtering with Residual Reinforcement Learning for Humanoids</title>
+  <link rel="icon" type="image/svg+xml" href="./static/images/berkeley.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+  <script>
+    function updateComparativeVideos() {
+      var task = document.getElementById("comparative-menu-tasks").value;
+      console.log("Comparative", task)
+
+      let path1, path2;
+
+      switch (task) {
+          case 'swallow':
+              path1 = `media/tasks/swallow_compressed.mp4`
+              path2 = `media/baseline/swallow_compressed.mp4`;
+              break;
+          case 'bruce':
+              path1 = `media/tasks/bruce_compressed.mp4`;
+              path2 = `media/baseline/bruce_compressed.mp4`;
+              break;
+          case 'nezha':
+              path1 = `media/tasks/nezha_compressed.mp4`;
+              path2 = `media/baseline/nezha_compressed.mp4`;
+              break;
+          case 'singleleg':
+              path1 = `media/tasks/singleleg_compressed.mp4`;
+              path2 = `media/baseline/singleleg_compressed.mp4`;
+              break;
+          case 'squat':
+              path1 = `media/tasks/squat_tsinghua_compressed.mp4`;
+              path2 = `media/baseline/squat_compressed.mp4`;
+              break;
+          default:
+              path1 = ``;
+              path2 = ``;
+      }
+  
+      // Update video sources based on the selected task
+      document.getElementById("comparative-video1").src = path1
+      document.getElementById("comparative-video2").src = path2
+
+      // Reload videos
+      document.getElementById("comparative-video1").load();
+      document.getElementById("comparative-video2").load();
+  }
+
+
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <style>
+    .pop-card {
+      transition: box-shadow 0.25s ease;
+      cursor: zoom-in;
+    }
+    .pop-card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    #center-pop-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.55);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #center-pop-overlay.active {
+      opacity: 1;
+    }
+    #center-pop-content {
+      width: 70vw;
+      max-width: 920px;
+      transform: scale(0.92);
+      transition: transform 0.25s ease;
+    }
+    #center-pop-overlay.active #center-pop-content {
+      transform: scale(1);
+    }
+    #center-pop-content > div {
+      background: #fff !important;
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body onload="updateComparativeVideos();">
+
+
+
+<section class="hero is-link is-fullheight video" style="overflow: hidden; position:relative;">
+  <div class="hero-video" style="height: 100%; width: 177.77777778vh; min-width: 100%;min-height: 56.25vw;">
+    <video playsinline autoplay muted loop>
+      <source src="./media/title/title.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="overlay"></div>
+  <div class="hero-head is-hidden-mobile">
+    <header class="navbar">
+      <div class="container is-size-5">
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <a class="navbar-item pl-4 pr-4" href="https://arxiv.org/pdf/2609.15988" target="_blank">
+              <span class="icon" style="margin-right:5px;">
+                <img src="./static/images/pdf.svg" alt="PDF" />
+              </span>
+              <span>Paper</span>
+            </a>
+            <a class="navbar-item  pl-4 pr-4" href="https://arxiv.org/abs/2609.15988"  target="_blank">
+              <span class="icon" style="margin-right:5px;">
+                <img src="./static/images/arxiv.svg" alt="ArXiv" />
+              </span>
+              <span>arXiv</span> </a>
+            <a href="#comparative" class="navbar-item pl-4 pr-4">
+              <span class="icon" style="margin-right:5px;">
+                <img src="./static/images/youtube.svg" alt="Video" style="width: 24px; height: 24px;" />
+              </span>
+              <span>Video</span>
+            </a>
+              <!-- <a href="" class="navbar-item pl-4 pr-4"  target="_blank">
+                <span class="icon" style="font-size: 1.5rem; margin-right: 5px;">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>Code</span>
+              </a> -->
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+ 
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <!-- Title text now baked into the hero video; overlay text hidden.
+      <h1 class="title is-1 publication-title is-size-1-mobile" style="font-size: 12rem;">
+        ResSafe
+      </h1>
+      <h1 class="subtitle is-1 publication-title is-size-4-mobile" style="font-size: 4rem;">
+        Learning Safety Filtering with Residual Reinforcement Learning for Humanoids
+      </h1>
+      -->
+      <div class="column has-text-centered is-hidden-tablet">
+        <div class="publication-links">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">ResSafe: Learning Safety Filtering with Residual Reinforcement Learning for Humanoids</h1>
+          <!-- <h3 class="title is-4 conference-authors"><a target="_blank" href="https://wcbm-workshop.github.io/">RSS Workshop on Whole-body Control and Bimanual Manipulation 2025</a></h3> -->
+          <!-- <div class="column has-text-centered"> -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a target="_blank" href="https://github.com/qugechen">Gechen Qu</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a target="_blank" href="https://tongzhangthu.github.io/">Tong Zhang</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a target="_blank" href="https://scholar.google.ca/citations?user=uzzNsVMAAAAJ&hl=en">Bike Zhang</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a target="_blank" href="https://wangyenjen.github.io/">Yen-Jen Wang</a><sup>1</sup>
+              </span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a target="_blank" href="https://hybrid-robotics.berkeley.edu/koushil/">Koushil Sreenath</a><sup>1,&dagger;</sup>,</span>
+              <span class="author-block">
+                <a target="_blank" href="https://people.eecs.berkeley.edu/~tomlin/">Claire Tomlin</a><sup>1,&dagger;</sup>,</span>
+              <span class="author-block">
+                <a target="_blank" href="https://jay-choi.me">Jason Jangho Choi</a><sup>2,&dagger;</sup>
+              </span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>University of California, Berkeley</span>
+              <span class="author-block"><sup>2</sup>University of California, Los Angeles</span>
+            </div>
+            <div class="is-size-6 publication-authors"><sup>&dagger;</sup>Equal advising</div>
+            <div class="is-size-6 publication-authors">Correspondence to: <a href="mailto:qugch@berkeley.edu">qugch@berkeley.edu</a></div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a target="_blank" href="https://arxiv.org/pdf/2609.15988"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <!-- arXiv Link. -->
+                <span class="link-block">
+                  <a target="_blank" href="https://arxiv.org/abs/2609.15988"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <!-- Video Link. -->
+                <span class="link-block">
+                  <a href="#comparative"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-video"></i>
+                    </span>
+                    <span>Video</span>
+                  </a>
+                </span>
+                <!-- Code Link. -->
+                <!-- <span class="link-block">
+                  <a target="_blank" href=""
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (Coming Soon)</span>
+                    </a>
+                </span> -->
+
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="comparative">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-full">
+        <h2 class="title is-2" style="text-align: center; padding-bottom: 0px;">Comparative Results</h2>
+        <p class="has-text-centered is-size-5" style="margin-bottom: 10px; padding-bottom: 0px;">
+          We randomly select motions from a large balance dataset for evaluation.
+        </p>
+        <p class="has-text-centered is-size-5" style="margin-bottom: 10px; padding-bottom: 0px;">
+          In the videos, the large black payload weighs 5 lbs (≈2.3 kg) and the small gray payload weighs 2.5 lbs (≈1.1 kg).
+        </p>
+        <p class="has-text-centered is-size-5" style="margin-bottom: 30px; padding-bottom: 0px;">
+          (Played at the original speed)
+        </p>
+        <div class="columns" style="margin-bottom: 50px;">
+          <div class="column">
+            <h3 class="title is-3" style="text-align: center; margin-bottom: 10px; font-size: x-large;">Motion ID: 9350</h3>
+            <video autoplay muted loop playsinline controls src="./media/comparison/9350.mp4" width="100%" style="border-radius:10px;"></video>
+          </div>
+          <div class="column">
+            <h3 class="title is-3" style="text-align: center; margin-bottom: 10px; font-size: x-large;">Motion ID: 1665</h3>
+            <video autoplay muted loop playsinline controls src="./media/comparison/1665.mp4" width="100%" style="border-radius:10px;"></video>
+          </div>
+        </div>
+
+        <div class="columns" style="margin-bottom: 50px;">
+          <div class="column">
+            <h3 class="title is-3" style="text-align: center; margin-bottom: 10px; font-size: x-large;">Motion ID: 6337</h3>
+            <video autoplay muted loop playsinline controls src="./media/comparison/6337.mp4" width="100%" style="border-radius:10px;"></video>
+          </div>
+          <div class="column">
+            <h3 class="title is-3" style="text-align: center; margin-bottom: 10px; font-size: x-large;">Motion ID: 8407</h3>
+            <video autoplay muted loop playsinline controls src="./media/comparison/8407.mp4" width="100%" style="border-radius:10px;"></video>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-full">
+        <h2 class="title is-2" style="text-align: center; padding-bottom: 30px;">Various Disturbance</h2>
+        <div class="columns is-centered" style="margin-bottom: 50px;">
+          <div class="column is-half">
+            <div style="overflow:hidden; line-height:0;">
+              <video autoplay muted loop playsinline controls src="./media/disturbance/various_disturbance.mp4" width="100%" style="display:block; border-radius:0; transform:scale(1.02);"></video>
+            </div>
+          </div>
+          <div class="column is-half">
+            <div style="overflow:hidden; line-height:0;">
+              <video autoplay muted loop playsinline controls src="./media/disturbance/various_payload_weights_web.mp4" width="100%" style="display:block; border-radius:0; transform:scale(1.02);"></video>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-2 has-text-centered" style="padding-bottom: 20px;">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Safe control of humanoid robots remains challenging due to their high-dimensional dynamics,
+            contact-rich interactions, and sensitivity to disturbances. Although reinforcement learning has
+            enabled effective locomotion and motion tracking, learned policies can still generate unsafe
+            actions that lead to instability or falls. In this work, we propose residual reinforcement learning
+            as an implicit safety-filtering mechanism for safe humanoid control.
+          </p>
+          <p>
+            Instead of relying on a single nominal policy to simultaneously balance performance, safety, and
+            robustness, we decouple performance and safety. The nominal policy focuses solely on task
+            performance, while a residual policy learns safety corrections. This decoupling leads to a better
+            performance–safety Pareto trade-off and avoids the need for careful tuning of multiple competing
+            reward terms within a single policy training. We show that the residual policy can act as an
+            implicit safety filter.
+          </p>
+          <p>
+            We evaluate our method in challenging humanoid balance tasks. Compared with the nominal reference
+            policy and a learning-based safety filter baseline, residual reinforcement learning improves safety
+            while still achieving competent performance.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="rows">
+
+    <div class="rows is-centered ">
+      <div class="row is-full-width">
+        <h2 class="title is-2" style="text-align: center; padding-bottom: 20px;">Learning Framework</h2>
+
+        <img src="media/figures/pipeline.png" class="interpolation-image"
+         alt="Interpolate start reference image."
+         style="border: 2.25px dashed #84868c; border-radius: 12px; padding: 6px;" />
+          <p>
+            <b>ResSafe Overview.</b>
+            By decoupling the learning of performance and safety, we aim to achieve a better
+            performance–safety Pareto frontier.
+            To achieve this, we propose a residual RL-based architecture in which the residual RL
+            policy learns a safety correction, resembling the structure of safety filters.
+            We train the residual RL safety filtering policy primarily through a
+            maximum-survival-time reachability formulation.
+            To improve generalization across various reference actions, we expose the residual RL policy during
+            training to varying levels of reference motion difficulty, reference policy safety, and domain
+            randomization.
+          </p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-full">
+        <h2 class="title is-2" style="text-align: center; padding-bottom: 20px;">Results</h2>
+
+        <!-- Two figure cards (placeholder images — replace the src with real figures) -->
+        <div class="columns is-centered" style="margin-bottom: 20px;">
+          <div class="column is-half">
+            <div class="pop-card" style="background:#f5f5f5; border-radius:12px; padding:18px; height:100%;">
+              <h3 class="title is-5 has-text-centered" style="margin-bottom: 14px;">Running Example (Cart-Pole)</h3>
+              <img src="./media/figures/main_running_example.png" alt="Cart-pole running example"
+                   style="width:100%; border-radius:8px; background:#fff;" />
+              <p class="has-text-justified" style="margin-top:14px; color:#4a4a4a; font-size:0.82rem;">
+                The safety constraint (<i>p</i>&nbsp;&le;&nbsp;0.5) is
+                deliberately set to conflict with the task goal (<i>p</i>&nbsp;=&nbsp;0.6)
+                (details in the paper).
+                A discriminating hyperplane (DH)
+                filter corrects the reference policy so that the filtered action (blue) stays within the learned
+                safe action set (green). It works here, but by learning a constraint representation rather than
+                the safe action itself, it only encodes a half-space constraint and generalizes poorly to
+                high-dimensional, non-control-affine systems. This motivates our residual RL that learns the safety
+                correction directly.
+              </p>
+            </div>
+          </div>
+          <div class="column is-half">
+            <div class="pop-card" style="background:#f5f5f5; border-radius:12px; padding:18px; height:100%;">
+              <h3 class="title is-5 has-text-centered" style="margin-bottom: 14px;">Generalization Across Reference Policies</h3>
+              <img src="./media/figures/fall_rate_multi_vs_single_dh.png" alt="Generalization across reference policies"
+                   style="width:100%; border-radius:8px; background:#fff;" />
+              <p class="has-text-justified" style="margin-top:14px; color:#4a4a4a; font-size:0.82rem;">
+                (a) When the residual policy and the discriminating hyperplane (DH)
+                policy are trained on a single reference-policy checkpoint and applied to out-of-distribution
+                checkpoints, the fall rate rises sharply. (b) Training both with half of the checkpoints in the
+                dataset yields much smaller safety degradation on unseen checkpoints, and our method degrades the
+                least.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+           <div class="pop-card" style="background:#f5f5f5; border-radius:12px; padding:24px 28px;">
+            <h3 class="title is-5 has-text-centered" style="margin-bottom: 14px;">Real-World Results</h3>
+            <div class="content has-text-justified" style="margin-bottom: 22px; color:#4a4a4a; font-size:0.82rem;">
+              <p>
+                As shown in the table
+                below, our method outperforms both the baseline and the discriminating hyperplane (DH) in terms of fall
+                rate and tracking error. Baseline* achieves better tracking under payload because it is explicitly
+                trained with a tracking reward; however, its tracking error is worse without payload across multiple
+                motions due to over-conservatism from domain randomization. These results demonstrate that the
+                residual safety-filtering policy can be transferred to the real robot and improve safety and
+                robustness when the robot performs challenging motion tasks.
+              </p>
+            </div>
+
+            <div class="columns is-variable is-4">
+
+              <!-- (a) -->
+              <div class="column">
+                <p class="has-text-weight-semibold has-text-centered" style="margin-bottom: 6px; font-size:0.82rem;">(a) #9350 (w/ payload)</p>
+                <table class="table is-fullwidth is-narrow is-hoverable" style="font-size: 0.82rem; background:transparent;">
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th class="has-text-centered">Fall</th>
+                      <th class="has-text-centered"><i>E</i><sub>pos-l</sub>&nbsp;(mm)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Baseline</td><td class="has-text-centered">10/10</td><td class="has-text-centered">84.13 &plusmn; 12.99</td></tr>
+                    <tr><td>Baseline*</td><td class="has-text-centered">0/10</td><td class="has-text-centered">47.73 &plusmn; 4.01</td></tr>
+                    <tr><td>DH</td><td class="has-text-centered">1/10</td><td class="has-text-centered">67.88 &plusmn; 20.13</td></tr>
+                    <tr class="is-selected"><td><b>Ours</b></td><td class="has-text-centered">2/10</td><td class="has-text-centered">49.81 &plusmn; 11.65</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- (b) -->
+              <div class="column">
+                <p class="has-text-weight-semibold has-text-centered" style="margin-bottom: 6px; font-size:0.82rem;">(b) #1665 (w/o payload)</p>
+                <table class="table is-fullwidth is-narrow is-hoverable" style="font-size: 0.82rem; background:transparent;">
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th class="has-text-centered">Fall</th>
+                      <th class="has-text-centered"><i>E</i><sub>pos-l</sub>&nbsp;(mm)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Baseline</td><td class="has-text-centered">8/10</td><td class="has-text-centered">80.42 &plusmn; 23.16</td></tr>
+                    <tr><td>Baseline*</td><td class="has-text-centered">2/10</td><td class="has-text-centered">73.67 &plusmn; 13.53</td></tr>
+                    <tr><td>DH</td><td class="has-text-centered">3/10</td><td class="has-text-centered">87.95 &plusmn; 21.10</td></tr>
+                    <tr class="is-selected"><td><b>Ours</b></td><td class="has-text-centered"><b>1/10</b></td><td class="has-text-centered">76.43 &plusmn; 6.22</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+            <div class="columns is-variable is-4">
+
+              <!-- (c) -->
+              <div class="column">
+                <p class="has-text-weight-semibold has-text-centered" style="margin-bottom: 6px; font-size:0.82rem;">(c) #6337 (w/ payload)</p>
+                <table class="table is-fullwidth is-narrow is-hoverable" style="font-size: 0.82rem; background:transparent;">
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th class="has-text-centered">Fall</th>
+                      <th class="has-text-centered"><i>E</i><sub>pos-l</sub>&nbsp;(mm)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Baseline</td><td class="has-text-centered">10/10</td><td class="has-text-centered">73.56 &plusmn; 14.68</td></tr>
+                    <tr><td>Baseline*</td><td class="has-text-centered">5/10</td><td class="has-text-centered">62.00 &plusmn; 14.43</td></tr>
+                    <tr><td>DH</td><td class="has-text-centered">9/10</td><td class="has-text-centered">82.62 &plusmn; 22.98</td></tr>
+                    <tr class="is-selected"><td><b>Ours</b></td><td class="has-text-centered"><b>0/10</b></td><td class="has-text-centered">70.01 &plusmn; 3.11</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- (d) -->
+              <div class="column">
+                <p class="has-text-weight-semibold has-text-centered" style="margin-bottom: 6px; font-size:0.82rem;">(d) #8407 (w/ payload)</p>
+                <table class="table is-fullwidth is-narrow is-hoverable" style="font-size: 0.82rem; background:transparent;">
+                  <thead>
+                    <tr>
+                      <th>Method</th>
+                      <th class="has-text-centered">Fall</th>
+                      <th class="has-text-centered"><i>E</i><sub>pos-l</sub>&nbsp;(mm)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Baseline</td><td class="has-text-centered">5/10</td><td class="has-text-centered">75.49 &plusmn; 28.52</td></tr>
+                    <tr><td>Baseline*</td><td class="has-text-centered">2/10</td><td class="has-text-centered">48.49 &plusmn; 13.62</td></tr>
+                    <tr><td>DH</td><td class="has-text-centered">4/10</td><td class="has-text-centered">66.10 &plusmn; 15.04</td></tr>
+                    <tr class="is-selected"><td><b>Ours</b></td><td class="has-text-centered"><b>0/10</b></td><td class="has-text-centered">61.01 &plusmn; 4.41</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+            <p class="has-text-centered has-text-grey" style="margin-top: 4px; font-size:0.72rem;">
+              Fall: number of falls over 10 trials. <i>E</i><sub>pos-l</sub>: mean local joint position tracking error.
+            </p>
+           </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+      <h2 class="title" style="margin-bottom:0;">BibTeX</h2>
+      <button id="bibtex-copy-btn" onclick="copyBibtex()"
+              class="button is-small is-rounded"
+              style="cursor:pointer;">
+        <span class="icon" style="margin-right:4px;"><i class="fas fa-copy"></i></span>
+        <span id="bibtex-copy-label">Copy</span>
+      </button>
+    </div>
+    <pre><code id="bibtex-code">@article{qu2026ressafe,
+    title={ResSafe: Learning Safety Filtering with Residual Reinforcement Learning for Humanoids},
+    author={Gechen Qu and Tong Zhang and Bike Zhang and Yen-Jen Wang and Koushil Sreenath and Claire Tomlin and Jason Jangho Choi},
+    journal={arXiv preprint arXiv:2609.15988},
+    year={2026}
+}</code></pre>
+  </div>
+</section>
+
+<script>
+  function copyBibtex() {
+    var text = document.getElementById('bibtex-code').innerText;
+    var label = document.getElementById('bibtex-copy-label');
+    var done = function () {
+      label.textContent = 'Copied!';
+      setTimeout(function () { label.textContent = 'Copy'; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+</script>
+
+  
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content has-text-centered">
+          <p>
+            Website template borrowed from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a> and <a href="https://umi-on-legs.github.io/">UMI on Legs</a>. 
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Center popup overlay for result cards -->
+<div id="center-pop-overlay">
+  <div id="center-pop-content"></div>
+</div>
+
+<script>
+  (function () {
+    var overlay = document.getElementById('center-pop-overlay');
+    var content = document.getElementById('center-pop-content');
+    document.querySelectorAll('.pop-card').forEach(function (card) {
+      card.addEventListener('mouseenter', function () {
+        content.innerHTML = card.outerHTML;
+        var clone = content.firstElementChild;
+        if (clone) { clone.style.height = 'auto'; }
+        overlay.classList.add('active');
+      });
+      card.addEventListener('mouseleave', function () {
+        overlay.classList.remove('active');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

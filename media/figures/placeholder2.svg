@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="640" height="420">
+  <rect x="1" y="1" width="638" height="418" rx="8" fill="#ffffff" stroke="#cfcfcf" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="320" y="205" font-family="Google Sans, Noto Sans, sans-serif" font-size="26" fill="#9a9a9a" text-anchor="middle">Figure 2 placeholder</text>
+  <text x="320" y="240" font-family="Google Sans, Noto Sans, sans-serif" font-size="16" fill="#bdbdbd" text-anchor="middle">replace media/figures/placeholder2.svg</text>
+</svg>
