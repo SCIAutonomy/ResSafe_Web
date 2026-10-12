@@ -112,6 +112,41 @@
     #center-pop-content > div {
       background: #fff !important;
     }
+
+    /* Mobile: drop the full-height hero and let the title video set the
+       section height at its native 16:9 ratio, full width, uncropped. */
+    @media screen and (max-width: 768px) {
+      .hero.is-fullheight.video {
+        min-height: 0;
+        height: auto;
+      }
+      .hero.is-fullheight.video .hero-video {
+        display: block;
+        position: relative;
+        width: 100% !important;
+        height: auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+      }
+      .hero.is-fullheight.video .hero-video video {
+        position: static;
+        display: block;
+        width: 100%;
+        height: auto;
+        min-width: 0;
+        min-height: 0;
+        transform: none;
+      }
+      /* Keep the (currently empty) mobile links overlay from adding height. */
+      .hero.is-fullheight.video .hero-body {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 0;
+      }
+    }
   </style>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
